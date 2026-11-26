@@ -9,8 +9,7 @@
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171412;--sf:#221e1b;--tx:#f2ebe4;--mu:#a39a92;--ln:#37312c;--ac:#6fb1d1;--on:#0e202a;--sh:0 1px 2px rgba(0,0,0,.4)}}
 :root[data-theme="dark"]{--bg:#171412;--sf:#221e1b;--tx:#f2ebe4;--mu:#a39a92;--ln:#37312c;--ac:#6fb1d1;--on:#0e202a;--sh:0 1px 2px rgba(0,0,0,.4)}
 *{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 Inter,system-ui,sans-serif;display:flex;flex-direction:column}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 Inter,system-ui,sans-serif}
 .top{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--sf);border-bottom:1px solid var(--ln);flex-wrap:wrap}
 .lgo{width:38px;height:38px;object-fit:contain}
 .ttl b{display:block;font-size:15px;letter-spacing:-.01em}.ttl span{font-size:12px;color:var(--mu)}
@@ -18,10 +17,10 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 Inter,system-u
 .pill{border-radius:99px;padding:6px 14px;font-weight:500}
 .pill.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
 .zm{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--mu)}.zm input{width:110px;accent-color:var(--ac)}
-.app{flex:1;min-height:0;display:grid;grid-template-columns:470px 1fr}
-#ed{overflow:auto;padding:16px;background:var(--bg);border-right:1px solid var(--ln)}
-#pv{overflow:auto;padding:24px;display:flex;flex-direction:column;align-items:center;gap:22px}
-@media(max-width:900px){body{display:block;height:auto}.app{display:block}#ed{border:0}#pv{padding:12px 0}}
+.app{display:grid;grid-template-columns:470px 1fr;align-items:start}
+#ed{position:sticky;top:0;max-height:100vh;overflow:auto;padding:16px;background:var(--bg);border-right:1px solid var(--ln)}
+#pv{min-width:0;overflow-x:auto;padding:24px;display:flex;flex-direction:column;align-items:center;gap:22px}
+@media(max-width:900px){.app{display:block}#ed{position:static;max-height:none;border:0}#pv{padding:12px 0}}
 button,.btn{font:inherit;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--ln);background:var(--sf);color:var(--tx);border-radius:8px;padding:6px 11px;transition:.15s;display:inline-flex;align-items:center;gap:6px}
 button:hover,.btn:hover{border-color:var(--ac);color:var(--ac)}
 .pri{background:var(--ac);color:var(--on);border-color:var(--ac);font-weight:600}.pri:hover{opacity:.9;color:var(--on)}
@@ -143,7 +142,7 @@ const fl=(l,h)=>`<label class="fl"><span>${l}</span>${h}</label>`;
 const gi=(g,ph)=>`<input type="text" data-g="${g}" value="${E(S.o[g])}" placeholder="${ph||''}">`;
 const sel=(g,opts)=>`<select data-g="${g}">${opts.map(([v,t])=>`<option value="${v}" ${S.o[g]==v?'selected':''}>${t}</option>`).join('')}</select>`;
 const tg=(a,f,on,t)=>`<label class="chip"><input type="checkbox" ${a} data-f="${f}" ${on?'checked':''}>${t}</label>`;
-function top(){const o=S.o;$('top').innerHTML=`<img src="${o.logo||LOGO_SRC}" class="lgo" alt=""><div class="ttl"><b>Menu Builder</b><span>${E(o.brand)}</span></div><div class="pills">${S.menus.map((x,i)=>`<button class="pill ${i==cur?'on':''}" data-a="tab" data-m="${i}">${E(x.name)}</button>`).join('')}<button class="pill" data-a="addMenu">+ New menu</button></div><div class="sp"></div><label class="zm">Zoom <input type="range" min="40" max="100" data-g="zoom" value="${Math.round(o.zoom*100)}"></label><button class="pri" data-a="print">Print / PDF</button>`}
+function topBar(){const o=S.o;$('top').innerHTML=`<img src="${o.logo||LOGO_SRC}" class="lgo" alt=""><div class="ttl"><b>Menu Builder</b><span>${E(o.brand)}</span></div><div class="pills">${S.menus.map((x,i)=>`<button class="pill ${i==cur?'on':''}" data-a="tab" data-m="${i}">${E(x.name)}</button>`).join('')}<button class="pill" data-a="addMenu">+ New menu</button></div><div class="sp"></div><label class="zm">Zoom <input type="range" min="40" max="100" data-g="zoom" value="${Math.round(o.zoom*100)}"></label><button class="pri" data-a="print">Print / PDF</button>`}
 function itemEd(s,si,i,ii){const a=`data-s="${si}" data-i="${ii}"`;
  return `<div class="it"><div class="rw" style="flex-wrap:nowrap"><input type="text" ${a} data-f="n" value="${E(i.n)}" placeholder="Item name"><button class="ic ghost" data-a="upI" ${a}>↑</button><button class="ic ghost" data-a="dnI" ${a}>↓</button><button class="ic ghost" data-a="dupI" ${a} title="Duplicate">⧉</button><button class="ic ghost dng" data-a="delI" ${a}>✕</button></div>
  <input type="text" ${a} data-f="d" value="${E(i.d)}" placeholder="Description (optional)">
@@ -173,7 +172,7 @@ function ed(){
  }
  $('ed').innerHTML=h;
 }
-function render(){top();ed();preview()}
+function render(){topBar();ed();preview()}
 /* events */
 document.addEventListener('input',e=>{
  const t=e.target,d=t.dataset;if(!d.g&&!d.f)return;
